@@ -1,6 +1,4 @@
-# Line Chatbot system development for reporting public utility issues 
-within College of Social Communication
-Innovation building
+# Line Chatbot system development for reporting public utility issues within College of Social Communication Innovation building
 
 
 ```zsh
