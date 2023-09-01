@@ -1,5 +1,11 @@
-# Waste Management System Development within the Faculty of Social Communication Innovation Srinakharinwirot University by Line Chatbot and Machine Learning
+# Line Chatbot system development for reporting public utility issues 
+within College of Social Communication
+Innovation building
 
+
+```zsh
+$ git clone https://github.com/SetthX/Waste-Management-System-Thesis.git
 ```
-git clone https://github.com/SetthX/Waste-Management-System-Thesis.git
-```
+
+Form URL: [COSCI 
+FORM](http://cosci.swu.ac.th/storage/downloads/ffIzgn6rIiKCmi6a1MTC9bmDdUJbNiTQKOOzP5wA.pdf)
