@@ -7,3 +7,5 @@ $ git clone https://github.com/SetthX/Waste-Management-System-Thesis.git
 
 Form URL: [COSCI 
 FORM](http://cosci.swu.ac.th/storage/downloads/ffIzgn6rIiKCmi6a1MTC9bmDdUJbNiTQKOOzP5wA.pdf)
+
+Author: Setthasit and Yadar
