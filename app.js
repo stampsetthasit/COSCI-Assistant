@@ -18,23 +18,22 @@ app.get("*", (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  // const body = req.body;
-  // if (++roundRobin >= agentHook.length) roundRobin = 0;
-  // const agent = agentHook[roundRobin];
-  // console.log("webhook", agent);
+  const body = req.body;
+  if (++roundRobin >= agentHook.length) roundRobin = 0;
+  const agent = agentHook[roundRobin];
+  console.log("webhook", agent);
 
-  // try {
-  //   const response = await axios.post(agent, body, {
-  //     headers: { "Content-Type": "application/json" },
-  //   });
+  try {
+    const response = await axios.post(agent, body, {
+      headers: { "Content-Type": "application/json" },
+    });
 
-  //   console.log(response.data);
-  //   res.send(response.data);
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).send("Error in webhook request");
-  // }
-  res.sendStatus(200);
+    console.log(response.data);
+    res.send(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error in webhook request");
+  }
 });
 
 app.listen(process.env.PORT || 3000, () => {
