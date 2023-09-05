@@ -34,7 +34,7 @@ app.post("/webhook", async (req, res) => {
   //   console.error(error);
   //   res.status(500).send("Error in webhook request");
   // }
-  res.send(200);
+  res.sendStatus(200);
 });
 
 app.listen(process.env.PORT || 3000, () => {
