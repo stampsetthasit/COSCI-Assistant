@@ -1,0 +1,17 @@
+{
+  "name": "cosci-assistant",
+  "version": "0.0.1",
+  "description": "A Node.js project for developing a LINE Chatbot aimed at streamlining the reporting of issues related to public utilities within a COSCI building. This project uses the LINE Messaging API to create an interactive and user-friendly experience, allowing students and staff to report problems and access information seamlessly. The chatbot will assist users in reporting issues, provide updates on the status of their reports, and offer relevant information about the college's public utilities. It aims to enhance convenience and efficiency in managing facility-related concerns.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Setthasit Poosawat",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  }
+}
