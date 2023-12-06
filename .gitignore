@@ -1,5 +1,3 @@
 node_modules
-
 .DS_Store
-~$5-313-Thesis-Proposal.docx
-*.pdf
+.env

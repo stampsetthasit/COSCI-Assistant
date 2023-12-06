@@ -1,41 +1,35 @@
+const createError = require("http-errors");
 const express = require("express");
-const axios = require("axios");
-require("dotenv").config({ path: ".env.local" });
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
 
 const app = express();
 
-let roundRobin = 0;
-const agentHook = [
-  "https://dialogflow.cloud.google.com/v1/integrations/line/webhook/3f3e21e6-21d3-4f36-8f1d-70591a3b0874",
-  "https://dialogflow.cloud.google.com/v1/integrations/line/webhook/e5b7fef9-1ac0-4edb-abfd-6d9f6e3c1ef8",
-];
-
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("*", (req, res) => {
-  res.send("Hello World");
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  next(createError(404));
 });
 
-app.post("/webhook", async (req, res) => {
-  const body = req.body;
-  if (++roundRobin >= agentHook.length) roundRobin = 0;
-  const agent = agentHook[roundRobin];
-  console.log("webhook", agent);
+// error handler
+app.use((err, req, res, next) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  try {
-    const response = await axios.post(agent, body, {
-      headers: { "Content-Type": "application/json" },
-    });
-
-    console.log(response.data);
-    res.send(response.data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error in webhook request");
-  }
+  res.status(err.status || 500);
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
-});
+module.exports = app;
