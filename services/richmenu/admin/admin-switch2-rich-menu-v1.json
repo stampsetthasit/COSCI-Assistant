@@ -1,0 +1,72 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": true,
+  "name": "admin-switch2-rich-menu-v2",
+  "chatBarText": "เมนูผู้ดูแลระบบ",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "รายการปัญหา"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "ตั้งค่า > วิธีแก้ไขปัญหาเบื้องต้น"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 846,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "ประกาศข่าวสาร"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 846,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "uri",
+        "uri": "https://liff.line.me"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1670,
+        "y": 0,
+        "width": 833,
+        "height": 1686
+      },
+      "action": {
+        "type": "richmenuswitch",
+        "richMenuAliasId": "",
+        "data": "switch-to-user"
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": true,
+  "name": "admin-rich-menu-v1",
+  "chatBarText": "เมนูผู้ดูแลระบบ",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1250,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "รายการปัญหา"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1254,
+        "y": 0,
+        "width": 1250,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "ประกาศข่าวสาร"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 846,
+        "width": 1250,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "วิธีแก้ไขปัญหาเบื้องต้น"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1254,
+        "y": 846,
+        "width": 1250,
+        "height": 843
+      },
+      "action": {
+        "type": "uri",
+        "uri": "https://liff.line.me/"
+      }
+    }
+  ]
+}

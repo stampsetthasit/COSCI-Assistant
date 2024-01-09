@@ -1,0 +1,84 @@
+{
+  "size": {
+    "width": 2500,
+    "height": 1686
+  },
+  "selected": true,
+  "name": "admin-switch1-rich-menu-v2",
+  "chatBarText": "เมนูผู้ใช้",
+  "areas": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "แจ้งปัญหา"
+      }
+    },
+    {
+      "bounds": {
+        "x": 834,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "วิธีแก้ไขปัญหา"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1672,
+        "y": 0,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "ติดตามปัญหา"
+      }
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 848,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "uri",
+        "uri": "https://liff.line.me"
+      }
+    },
+    {
+      "bounds": {
+        "x": 836,
+        "y": 848,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "message",
+        "text": "COSCI FAQ"
+      }
+    },
+    {
+      "bounds": {
+        "x": 1672,
+        "y": 848,
+        "width": 833,
+        "height": 843
+      },
+      "action": {
+        "type": "richmenuswitch",
+        "richMenuAliasId": "",
+        "data": "switch-to-admin"
+      }
+    }
+  ]
+}

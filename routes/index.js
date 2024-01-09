@@ -3,7 +3,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.send("/");
+  res.status(200).send("cosci utility chatbot");
 });
 
 module.exports = router;
