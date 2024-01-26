@@ -4,7 +4,7 @@ const path = require("path");
 const client = require("../config/line").richMenuClient;
 const { getUserId, updateUserRole } = require("./UserController");
 
-const createAndSetRichMenuWithImage = async (richMenu, imageName) => {
+async function createAndSetRichMenuWithImage(richMenu, imageName) {
   try {
     const richMenuId = await client.createRichMenu(richMenu);
     const richMenuAlias = `${imageName}_${richMenuId.slice(-4)}`; // be careful admin richmenu maybe need to create another function for purpose?
@@ -21,11 +21,11 @@ const createAndSetRichMenuWithImage = async (richMenu, imageName) => {
     console.error("Error create and set rich menu success", error);
     throw error;
   }
-};
+}
 
-const generateRandomNumber = () => {
+function generateRandomNumber() {
   return Math.floor(Math.random() * 1000);
-};
+}
 
 exports.createRichMenuAllUser = async (richMenuJSON, imageName) => {
   try {
@@ -96,9 +96,7 @@ exports.createSwitchRichMenuAdmin = async (
         });
 
         // Upload rich menu image
-        const imagePath = path.resolve(
-          "./" + `/public/assets/${imageNames[i]}.png`
-        );
+        const imagePath = path.resolve("./" + `/public/assets/${imageNames[i]}.png`);
         const bufferImage = readFileSync(imagePath);
         await client.setRichMenuImage(richMenuId, bufferImage);
 

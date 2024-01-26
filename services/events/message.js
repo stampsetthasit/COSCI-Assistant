@@ -1,23 +1,29 @@
-const { client } = require("../../config/line.js");
-const MessageController = require("../../controllers/MessageController.js");
+const { client } = require("../../config/line");
+const ResponseController = require("../../controllers/response/ResponseController");
 
 exports.handleMessage = async (event) => {
-  let message;
-  let replyToken = event.replyToken;
-  let incomingText = event.message.text.trim();
-  let userId = event.source.userId
+  try {
+    const incomingText = event.message.text.trim();
+    // User Menu
+    if (incomingText) {
+      const userId = event.source.userId;
+      const replyToken = event.replyToken;
 
-  // User Menu
-  if (incomingText) {
-    message = await MessageController.handleIncomingMessage(incomingText, userId);
+      const message = await ResponseController.handleIncomingMessage(
+        incomingText,
+        userId
+      );
 
-    replyMessage(replyToken, message);
+      this.replyMessage(replyToken, message);
+    }
+  } catch (error) {
+    console.error("Error handling message:", error);
   }
 };
 
-function replyMessage(replyToken, message) {
+exports.replyMessage = (replyToken, message) => {
   return client.replyMessage({
     replyToken: replyToken,
-    messages: [message],
+    messages: Array.isArray(message) ? message : [message],
   });
-}
+};

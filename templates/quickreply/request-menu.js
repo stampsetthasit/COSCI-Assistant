@@ -6,7 +6,7 @@ module.exports = {
     items: [
       {
         type: "action",
-        imageUrl: `${process.env.BASE_URL}/public/menuReq1.jpg`,
+        imageUrl: `${process.env.BASE_URL}/public/images/menuReq1.jpg`,
         action: {
           type: "message",
           label: "แจ้งซ่อมฝ่ายไอที 🖥️",
@@ -15,7 +15,7 @@ module.exports = {
       },
       {
         type: "action",
-        imageUrl: `${process.env.BASE_URL}/public/menuReq2.jpg`,
+        imageUrl: `${process.env.BASE_URL}/public/images/menuReq2.jpg`,
         action: {
           type: "message",
           label: "แจ้งซ่อมฝ่ายสื่อ 🎤",
@@ -24,7 +24,7 @@ module.exports = {
       },
       {
         type: "action",
-        imageUrl: `${process.env.BASE_URL}/public/menuReq3.jpg`,
+        imageUrl: `${process.env.BASE_URL}/public/images/menuReq3.jpg`,
         action: {
           type: "message",
           label: "แจ้งซ่อมฝ่ายอาคาร 🏢",

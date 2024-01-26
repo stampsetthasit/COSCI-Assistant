@@ -1,0 +1,42 @@
+const { destroyRequestUncompleted } = require("../RequestController");
+
+const UserController = require("../UserController");
+const QuickReplyController = require("./QuickReplyController");
+const FlexMessageController = require("./FlexMessageController");
+const MessageController = require("./MessageController");
+
+exports.handleIncomingMessage = async (message, userId) => {
+  try {
+    const userCode = await UserController.getUserCode(userId);
+    const quickReplyResponse = await QuickReplyController.getResponse(
+      message,
+      userCode
+    );
+    const flexMessageResponse = await FlexMessageController.getResponse(
+      message,
+      userCode
+    );
+    const messageResponse = await MessageController.getResponse(
+      message,
+      userCode
+    );
+
+    if (message.includes("ยกเลิก")) {
+      await destroyRequestUncompleted(userCode);
+      
+      return messageResponse
+    } else if (quickReplyResponse) {
+      return quickReplyResponse;
+    } else if (flexMessageResponse) {
+      return flexMessageResponse;
+    } else if (messageResponse) {
+      return messageResponse;
+    } else {
+      await destroyRequestUncompleted(userCode);
+
+      return { type: "text", text: "เกิดข้อผิดพลาดในการประมวลผลคำสั่ง" };
+    }
+  } catch (error) {
+    console.error("Error handling incoming message:", error);
+  }
+};

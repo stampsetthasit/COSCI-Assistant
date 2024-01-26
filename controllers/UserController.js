@@ -84,6 +84,24 @@ exports.getUserCode = async (userId) => {
   }
 };
 
+exports.getDisplayName = async (userCode) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        user_code: userCode,
+      },
+    });
+
+    if (user) {
+      return user.display_name;
+    }
+
+    return null;
+  } catch (error) {
+    throw new Error("Error retrieving user code: ", error.message);
+  }
+};
+
 exports.getUserId = async (userCode) => {
   try {
     const user = await User.findOne({
@@ -155,11 +173,11 @@ exports.getRole = async (userCode) => {
       },
     });
     if (user) {
-      return user.role;
+      return (user.role = "admin" ? "ผู้ดูแลระบบ" : "บุคคลทั่วไป");
     }
 
-    return null;
+    return "Unknown";
   } catch (error) {
-    throw new Error("Error retrieving user id: ", error.message);
+    console.error("Error retrieving user id: ", error.message);
   }
 };

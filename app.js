@@ -16,7 +16,7 @@ app.use(cors());
 app.use("/line", lineRouter);
 
 app.use(logger("dev"));
-app.use("/public", express.static(path.join(__dirname, "public/images")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

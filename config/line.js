@@ -1,19 +1,16 @@
 const line = require("@line/bot-sdk");
-const MessagingApiClient =
-  require("@line/bot-sdk").messagingApi.MessagingApiClient;
+const MessagingApiClient = line.messagingApi.MessagingApiClient;
 
-const { Client } = require("@line/bot-sdk");
+const { Client } = line;
 
-const config = {
+const lineConfig = {
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.LINE_CHANNEL_SECRET,
 };
 
-const richMenuClient = new Client(config);
-const client = new MessagingApiClient({
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-});
+const richMenuClient = new Client(lineConfig);
+const client = new MessagingApiClient(lineConfig);
 
-const middleware = new line.middleware(config);
+const middleware = new line.middleware(lineConfig);
 
-module.exports = { config, client, middleware, richMenuClient };
+module.exports = { client, middleware, richMenuClient };

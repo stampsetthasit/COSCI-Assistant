@@ -8,7 +8,7 @@ module.exports = {
         action: {
           type: "message",
           label: "ใช่",
-          text: "ใช่",
+          text: "วิธีแก้ไขปัญหา",
         },
       },
       {

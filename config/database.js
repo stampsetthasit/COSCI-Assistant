@@ -8,6 +8,34 @@ function createSequelizeInstance(databaseName, username, password, host) {
   });
 }
 
+async function syncDatabase(sequelize, databaseName) {
+  try {
+    await sequelize.sync();
+    console.log(
+      `[DATABASE] ${databaseName} Database synchronized successfully`
+    );
+  } catch (error) {
+    console.error(
+      `[DATABASE] Error synchronizing ${databaseName} database:`,
+      error
+    );
+  }
+}
+
+async function runQuery(query, replacements) {
+  try {
+    const [results, metadata] = await repair.query(query, {
+      replacements,
+      type: repair.QueryTypes.Raw,
+    });
+
+    return results;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 const chatbotUtility = createSequelizeInstance(
   process.env.DB_CHATBOT_NAME,
   process.env.DB_CHATBOT_USER,
@@ -22,22 +50,17 @@ const repair = createSequelizeInstance(
   process.env.DB_REPAIR_HOST
 );
 
-chatbotUtility
-  .sync()
-  .then(() => {
-    console.log("Chatbot Utility Database synchronized successfully");
-  })
-  .catch((error) => {
-    console.error("Error synchronizing database:", error);
-  });
+const room = createSequelizeInstance(
+  process.env.DB_ROOM_NAME,
+  process.env.DB_ROOM_USER,
+  process.env.DB_ROOM_PASS,
+  process.env.DB_ROOM_HOST
+);
 
-repair
-  .sync()
-  .then(() => {
-    console.log("Repair Database synchronized successfully");
-  })
-  .catch((error) => {
-    console.error("Error synchronizing database:", error);
-  });
+(async () => {
+  await syncDatabase(chatbotUtility, "Chatbot Utility");
+  await syncDatabase(repair, "Repair");
+  await syncDatabase(room, "Room");
+})();
 
-module.exports = { chatbotUtility, repair };
+module.exports = { chatbotUtility, repair, room, runQuery };

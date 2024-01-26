@@ -5,7 +5,7 @@ const Request = sequelize.define(
   "Request",
   {
     req_id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(16),
       primaryKey: true,
       allowNull: false,
     },
@@ -18,12 +18,6 @@ const Request = sequelize.define(
     req_ctg: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    req_pro_num: {
-      type: DataTypes.STRING,
-    },
-    req_pro_name: {
-      type: DataTypes.STRING,
     },
     req_pro_room: {
       type: DataTypes.STRING,

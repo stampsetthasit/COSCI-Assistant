@@ -1,6 +1,7 @@
 const { handleFollow } = require("./events/follow");
 const { handleMessage } = require("./events/message");
 const { handleUnFollow } = require("./events/unfollow");
+const { handleImage } = require("./events/image");
 
 exports.handleEvent = (event) => {
   switch (event.type) {
@@ -10,7 +11,7 @@ exports.handleEvent = (event) => {
           handleMessage(event);
           break;
         case "image":
-          console.log("event.message.id");
+          handleImage(event);
           break;
         case "video":
           console.log("event.message.id");
