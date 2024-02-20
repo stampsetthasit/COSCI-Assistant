@@ -92,7 +92,10 @@ exports.createAdminSwitchRichMenu = async (req, res) => {
 exports.unlinkAdminRichMenu = async (req, res) => {
   try {
     const userCode = req.params.userCode;
+    const adminUserCode = req.params.adminUserCode
     const data = await RichMenuController.unlinkRichMenuAdmin(userCode);
+    data["admin"] = adminUserCode
+    
     return res.status(200).json({
       result: "OK",
       data: data,

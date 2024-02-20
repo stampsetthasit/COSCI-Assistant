@@ -73,3 +73,30 @@ exports.getAdminInfo = async (category) => {
     console.error("Error fetching admin information:", error);
   }
 };
+
+exports.getAdminCategory = async (userCode) => {
+  try {
+    const admin = await Admin.findOne({
+      where: {
+        user_code: userCode,
+      },
+    });
+
+    return admin.category;
+  } catch (error) {
+    console.error("Error fetching admin category:", error);
+  }
+};
+
+exports.getAdminEmail = async (userCode) => {
+  try {
+    const admin = await Admin.findOne({
+      attributes: ["email"],
+      where: {
+        user_code: userCode,
+      },
+    });
+
+    return admin;
+  } catch (error) {}
+};

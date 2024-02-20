@@ -30,8 +30,8 @@ function mapCategoryToDepartment(category) {
   return departments.join(", ");
 }
 
-function extractContentWithinParentheses(buildName) {
-  const matchResult = buildName.match(/\(([^)]+)\)/);
+function extractContentWithinParentheses(input) {
+  const matchResult = input.match(/\(([^)]+)\)/);
 
   // If parentheses are found, extract the content within them
   if (matchResult) {
@@ -40,7 +40,7 @@ function extractContentWithinParentheses(buildName) {
   }
 
   // If no parentheses are found, return the original string
-  return buildName;
+  return input;
 }
 
 function extractCharactersAndNumbers(input) {
@@ -92,6 +92,15 @@ function formatDateToString(dateString) {
   return formattedDate;
 }
 
+function generateRandomNumber() {
+  return Math.floor(Math.random() * 1000);
+}
+
+function generateUniqueKey() {
+  const { v4: uuidv4 } = require("uuid");
+  return uuidv4();
+}
+
 module.exports = {
   truncateLabel,
   removeNonDigits,
@@ -103,4 +112,6 @@ module.exports = {
   extractCharactersAndNumbers,
   isBusinessHour,
   formatDateToString,
+  generateRandomNumber,
+  generateUniqueKey,
 };

@@ -10,7 +10,12 @@ const admin = require("../services/admin");
 router.get("/create/user", richmenu.createDefaultRichMenu);
 router.get("/delete/user", richmenu.deleteDefaultRichMenu);
 
-router.get("/unlink/admin/:userCode", admin.delete, richmenu.unlinkAdminRichMenu);
+router.get(
+  "/unlink/admin/:userCode/:adminUserCode",
+  repair.isAdmin,
+  admin.delete,
+  richmenu.unlinkAdminRichMenu
+);
 router.get("/delete/admin", richmenu.deleteAdminRichMenu);
 
 router.get(

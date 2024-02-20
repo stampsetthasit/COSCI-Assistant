@@ -5,9 +5,9 @@ const UserController = require("../../controllers/UserController");
 const RequestController = require("../../controllers/RequestController");
 const FlexMessageContoller = require("../../controllers/response/FlexMessageController");
 
-const { default: axios } = require("axios");
 const { replyMessage } = require("./message");
 const { QuickReply } = require("../../templates/template");
+const { getImageFromLine } = require("../../utils/httpRequest");
 
 exports.handleImage = async (event) => {
   try {
@@ -94,22 +94,3 @@ exports.handleImage = async (event) => {
     console.error("Error handling image: ", error);
   }
 };
-
-async function getImageFromLine(messageId) {
-  try {
-    const response = await axios.get(
-      `https://api-data.line.me/v2/bot/message/${messageId}/content`,
-      {
-        headers: {
-          Authorization: "Bearer " + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-        },
-        responseType: "stream",
-      }
-    );
-
-    return response;
-  } catch (error) {
-    console.error("Error getting image from LINE:", error);
-    throw error; // Re-throw the error to propagate it up the call stack
-  }
-}

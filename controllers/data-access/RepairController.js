@@ -39,6 +39,13 @@ exports.getMemberCategory = async (email) => {
     : null;
 };
 
+exports.getMemberType = async (email) => {
+  const query = "SELECT mem_type FROM member WHERE mem_mail = ?";
+  const results = await runQuery(query, [email]);
+
+  return results.length > 0 ? results[0] : null;
+};
+
 exports.getRepairProblemData = async (category) => {
   return runQuery("SELECT * FROM repair_problem WHERE ctg_no = :category", {
     category,
