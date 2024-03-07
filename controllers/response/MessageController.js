@@ -55,10 +55,10 @@ exports.getResponse = async (request, requesterCode) => {
 
       return { type: "text", text: "ยกเลิกการแจ้งซ่อมเรียบร้อยแล้วครับ " };
     } else if (request === "เร่งด่วน") {
-      return {
-        type: "text",
-        text: "แสดง QuickReply ให้ user เลือกแผนก หลังจากนั้น ทำการสุ่ม Admin สัก 1 คนในแผนกที่เกี่ยวข้อง และแสดงแอดมินที่รับผิดชอบแผนกเดียวก่อน แอดมินที่รับผิดชอบหลายแผนก",
-      };
+      // return {
+      //   type: "text",
+      //   text: "แสดง QuickReply ให้ user เลือกแผนก หลังจากนั้น ทำการสุ่ม Admin สัก 1 คนในแผนกที่เกี่ยวข้อง และแสดงแอดมินที่รับผิดชอบแผนกเดียวก่อน แอดมินที่รับผิดชอบหลายแผนก",
+      // };
     } else if (request.includes("ยืนยันแอดมิน")) {
       const email = extractContentWithinParentheses(request);
 

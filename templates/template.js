@@ -5,19 +5,20 @@ const {
   otherProblem,
 } = require("./quickreply/request-department");
 const priority = require("./quickreply/request-priority");
-const menu = require("./quickreply/request-menu");
 const detail = require("./quickreply/request-detail");
 const guide = require("./quickreply/request-fix-guide");
 const image = require("./quickreply/request-image.js");
 
 const confirm = require("./confirm/confirm-template");
 
+const menu = require("./flex-message/request-menu.js");
 const profile = require("./flex-message/admin-profile");
 const {
   receiptDetails,
   cancelButton,
 } = require("./flex-message/request-receipt-details");
 const { roomsTable, rowSelecter } = require("./flex-message/rooms-selecter");
+const topic = require("./flex-message/request-topic.js")
 
 const QuickReply = {
   Problems: {
@@ -29,6 +30,7 @@ const QuickReply = {
     DETAIL: detail,
     GUIDE: guide,
     IMAGE: image,
+    TOPIC: topic
   },
 
   Menu: {

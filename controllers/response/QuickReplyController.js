@@ -1,6 +1,6 @@
 const { QuickReply } = require("../../templates/template");
 const { Problems, Menu } = QuickReply;
-const { truncateLabel } = require("../../utils/helpers");
+const { isBusinessHour } = require("../../utils/helpers");
 
 const RepairController = require("../data-access/RepairController");
 const RequestController = require("../RequestController");
@@ -44,6 +44,7 @@ exports.getCategoryFromText = (request) => {
 };
 
 async function handleQuickReply(request, requesterCode, matchedProblem) {
+  // แจ้งปัญหา
   if (matchedProblem) {
     /*
     USER: แจ้งปัญหา > ฝ่าย...
@@ -51,6 +52,7 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
     */
     // แจ้งปัญหา > ฝ่าย...
     const reqId = await handleMatchedProblem(matchedProblem, requesterCode);
+    console.log(matchedProblem);
     const quickReply = await generateQuickReplyItems(
       {
         ...matchedProblem,
@@ -60,6 +62,8 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
     );
 
     console.log("MATCHED PROBLEM LOG : : :", reqId);
+
+    console.log(quickReply);
 
     return quickReply;
   } else if (request.includes(Problems.OTHER.name)) {
@@ -80,6 +84,20 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
     selectedOptions = await handleSelectedOption(request);
     if (request === "ไม่เร่งด่วน") {
       return Problems.GUIDE;
+    }
+    if (request === "เร่งด่วน" && reqId) {
+      const isWithinBusinessHour = isBusinessHour(
+        process.env.BUSINESS_START_HOUR,
+        process.env.BUSINESS_END_HOUR
+      );
+
+      if (!isWithinBusinessHour) {
+        selectedOptions[1] = "ไม่เร่งด่วน";
+        return [
+          { type: "text", text: "ขออภัย😢 ไม่มีพนักงานออนไลน์ในขณะนี้🙏🏾" },
+          Problems.GUIDE,
+        ];
+      }
     }
   } else if (
     request &&
@@ -155,21 +173,21 @@ async function generateQuickReplyItems(config, selectedOptions) {
   const problems = await RepairController.getRepairProblemData(category);
 
   problems.map((problem) => {
-    const truncatedLabel = truncateLabel(problem.prob_name, 20);
     quickReplyItems.unshift({
-      type: "action",
+      type: "button",
       action: {
         type: "message",
-        label: truncatedLabel,
+        label: problem.prob_name,
         text: problem.prob_name,
       },
+      adjustMode: "shrink-to-fit",
     });
     selectedOptions.push(problem.prob_name);
   });
 
   if (subMenuLabel) {
     quickReplyItems.push({
-      type: "action",
+      type: "button",
       action: {
         type: "message",
         label: subMenuLabel,
@@ -177,11 +195,10 @@ async function generateQuickReplyItems(config, selectedOptions) {
       },
     });
   }
+  const flex = Problems.TOPIC;
+  flex.contents.body.contents = quickReplyItems;
 
-  return {
-    name,
-    type: "text",
-    text,
-    quickReply: { items: quickReplyItems },
-  };
+  console.log(flex.contents.body.contents);
+
+  return flex;
 }

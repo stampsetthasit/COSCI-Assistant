@@ -22,7 +22,7 @@ exports.broadcast = async (userId, { message, image, emergency }) => {
       {
         type: "text",
         text:
-          `ประกาศ ${emergency === true ? "#ฉุกเฉิน 🚨" : "#ทั่วไป"}\n\n` +
+          `ประกาศ ${emergency == "true" ? "#ฉุกเฉิน 🚨" : "#ทั่วไป"}\n\n` +
           message +
           `\n\n📣ประกาศโดย ${category}`,
       },

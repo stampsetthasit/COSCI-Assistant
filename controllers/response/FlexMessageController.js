@@ -5,7 +5,6 @@ const {
   removeNonDigits,
   getRandomElement,
   extractContentWithinParentheses,
-  isBusinessHour,
   formatDateToString,
 } = require("../../utils/helpers");
 const { FlexMessage } = require("../../templates/template");
@@ -19,6 +18,9 @@ const RepairController = require("../data-access/RepairController");
 
 exports.getResponse = async (request, requesterCode) => {
   try {
+    const adminCategory = await AdminController.getAdminCategory(requesterCode) ?? null;
+
+    // ติดตามปัญหา
     if (request === "ติดตามปัญหา") {
       const userRequests = await RequestController.getAllRequestByUser(
         requesterCode
@@ -40,19 +42,15 @@ exports.getResponse = async (request, requesterCode) => {
       return replyMessage;
     }
 
+    // รายการปัญหา
+    if (request === "รายการปัญหา" && adminCategory) {
+      console.log("ADMIN CATEGORY: : : :", adminCategory);
+      // ค้นหารายการปัญหาที่เกี่ยวข้องกับหมวดหมู่แอดมิน
+    }
+
     // แจ้งปัญหา
     if (request === "เร่งด่วน" && reqId) {
       const category = QuickReplyController.getCategoryFromText(reqId);
-      const isWithinBusinessHour = isBusinessHour(
-        process.env.BUSINESS_START_HOUR,
-        process.env.BUSINESS_END_HOUR
-      );
-
-      if (!isWithinBusinessHour) {
-        await destroyRequestUncompleted(requesterCode);
-
-        return { type: "text", text: "ขออภัย😢 ตอนนี้อยู่นอกเวลาทำการ🙏🏾" };
-      }
 
       if (category !== 0) {
         const admins = await AdminController.getAdminInfo(category);

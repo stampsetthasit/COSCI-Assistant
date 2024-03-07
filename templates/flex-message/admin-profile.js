@@ -50,7 +50,7 @@ module.exports = (adminName, adminDepartment, adminPhone) => ({
           height: "sm",
           action: {
             type: "uri",
-            label: "CALL",
+            label: "โทร",
             uri: `tel:${adminPhone}`,
           },
         },
