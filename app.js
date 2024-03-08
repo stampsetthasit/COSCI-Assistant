@@ -10,7 +10,6 @@ const indexRouter = require("./routes/index");
 const richMenuRouter = require("./routes/richmenu");
 const lineRouter = require("./routes/line");
 const broadcastRouter = require("./routes/broadcast");
-const scheduler = require("./controllers/schedule/mail");
 
 const app = express();
 app.use(cors());

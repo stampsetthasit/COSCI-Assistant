@@ -8,15 +8,18 @@ const AdminController = require("../AdminController");
 const mailer = require("../../utils/utilities");
 
 // Set up a cron job to run every day
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 9 * * *", async () => {
+  const now = new Date();
   // Retrieve requests that need to be monitored
   const requests = await RequestController.getAllRequestNotCompleted();
   const notificationDelayDays = process.env.NOTIFICATION_DELAY_DAYS;
 
+  console.log("Cron job running at", now.toString());
+
   // Check each request
   for (const request of requests) {
     const lastUpdateTimestamp = new Date(request.updated_at).getTime();
-    const currentTimestamp = new Date().getTime();
+    const currentTimestamp = now.getTime();
 
     // Calculate the difference in days
     const daysDifference = Math.floor(

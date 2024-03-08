@@ -1,3 +1,5 @@
+const scheduler = require("../controllers/schedule/mail");
+
 const { handleFollow } = require("./events/follow");
 const { handleMessage } = require("./events/message");
 const { handleUnFollow } = require("./events/unfollow");
