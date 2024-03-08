@@ -138,6 +138,23 @@ exports.cancelRequest = async (userCode, reqId) => {
   }
 };
 
+exports.getAllRequestNotCompleted = async () => {
+  try {
+    const requestData = await Request.findAll({
+      where: {
+        req_finished: {
+          [Op.eq]: null,
+        },
+      },
+    });
+
+    return requestData;
+  } catch (error) {
+    console.error("Error get request:", error);
+    throw error;
+  }
+};
+
 // Image
 exports.createRequestImage = async (data) => {
   try {
