@@ -155,6 +155,34 @@ exports.getAllRequestNotCompleted = async () => {
   }
 };
 
+exports.getAllRequestByCategory = async (categories, isSuperAdmin) => {
+  try {
+    let whereCondition = {
+      req_finished: { [Op.eq]: null },
+    };
+
+    if (!isSuperAdmin) {
+      // Normal user: Only retrieve requests for their specific category
+      whereCondition.req_ctg = {
+        [Op.in]: Array.isArray(categories)
+          ? categories.map(Number)
+          : [Number(categories)],
+      };
+    }
+    // Super admin: Retrieve all requests
+    // No need to add req_ctg condition for super admins
+
+    const requestsData = await Request.findAll({
+      where: whereCondition,
+    });
+
+    return requestsData;
+  } catch (error) {
+    console.error("Error get all request:", error);
+    throw error;
+  }
+};
+
 // Image
 exports.createRequestImage = async (data) => {
   try {

@@ -100,3 +100,13 @@ exports.getAdminEmail = async (userCode) => {
     return admin;
   } catch (error) {}
 };
+
+exports.isSuperAdmin = (categories) => {
+  // Assuming super admins have categories 1, 2, 3
+  const superAdminCategories = [1, 2, 3];
+
+  // Check if the user has all super admin categories
+  return superAdminCategories.every((category) =>
+    categories.includes(category)
+  );
+};

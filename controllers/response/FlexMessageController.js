@@ -18,8 +18,6 @@ const RepairController = require("../data-access/RepairController");
 
 exports.getResponse = async (request, requesterCode) => {
   try {
-    const adminCategory = await AdminController.getAdminCategory(requesterCode) ?? null;
-
     // ติดตามปัญหา
     if (request === "ติดตามปัญหา") {
       const userRequests = await RequestController.getAllRequestByUser(
@@ -28,7 +26,7 @@ exports.getResponse = async (request, requesterCode) => {
 
       if (userRequests.length == 0) return null;
 
-      const bubbles = await createReceiptDetailsBubbles(userRequests);
+      const bubbles = await createReceiptDetailsBubbles(userRequests, false);
 
       const replyMessage = {
         type: "flex",
@@ -43,9 +41,29 @@ exports.getResponse = async (request, requesterCode) => {
     }
 
     // รายการปัญหา
-    if (request === "รายการปัญหา" && adminCategory) {
-      console.log("ADMIN CATEGORY: : : :", adminCategory);
+    if (request === "รายการปัญหา") {
       // ค้นหารายการปัญหาที่เกี่ยวข้องกับหมวดหมู่แอดมิน
+      const admin = await AdminController.isAdminExist(requesterCode);
+      if (admin) {
+        const categoryArray = admin.category.split(",").map(Number);
+        const requests = await RequestController.getAllRequestByCategory(
+          categoryArray,
+          AdminController.isSuperAdmin(categoryArray)
+        );
+
+        const bubbles = await createReceiptDetailsBubbles(requests, true);
+
+        const replyMessage = {
+          type: "flex",
+          altText: "รายการปัญหา",
+          contents: {
+            type: "carousel",
+            contents: bubbles,
+          },
+        };
+
+        return replyMessage;
+      }
     }
 
     // แจ้งปัญหา
@@ -199,7 +217,7 @@ function createRequestInfo(req, rooms, categories, status) {
   };
 }
 
-async function createReceiptDetailsBubbles(requests) {
+async function createReceiptDetailsBubbles(requests, isAdmin) {
   let bubbles = [];
   const requestReceipt = FlexMessage.REQUEST.DETAILS;
   const cancelButton = FlexMessage.REQUEST.CANCEL_BUTTON;
@@ -212,7 +230,7 @@ async function createReceiptDetailsBubbles(requests) {
     const requestInfo = createRequestInfo(req, rooms, categories, status);
     const receipts = requestReceipt(requestInfo);
 
-    if (req.req_status == 1) {
+    if (req.req_status == 1 && !isAdmin) {
       receipts.body.contents[0].contents.push(cancelButton(req.req_id));
       bubbles.push(receipts);
     } else {
