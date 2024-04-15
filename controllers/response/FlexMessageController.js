@@ -15,6 +15,10 @@ const AdminController = require("../AdminController");
 const RequestController = require("../RequestController");
 const RoomController = require("../data-access/RoomController");
 const RepairController = require("../data-access/RepairController");
+const ProblemController = require("../ProblemController");
+const SolutionController = require("../SolutionController");
+
+const { solutionInfo } = require("./QuickReplyController");
 
 exports.getResponse = async (request, requesterCode) => {
   try {
@@ -129,6 +133,117 @@ exports.getResponse = async (request, requesterCode) => {
         return { type: "text", text: "ขออภัยไม่สามารถแก้ไขข้อมูลได้" };
       }
     }
+
+    if (request === "วิธีแก้ไขปัญหา") {
+      const solutions = await SolutionController.getAllSolutions();
+
+      const bubbles = await createProblemDetailBubbles(
+        "วิธีแก้ไขปัญหา",
+        solutions
+      );
+
+      const replyMessage = {
+        type: "flex",
+        altText: "วิธีแก้ไขปัญหาเบื้องต้น รายการวิธีแก้ไข",
+        contents: {
+          type: "carousel",
+          contents: bubbles,
+        },
+      };
+
+      return replyMessage;
+    }
+
+    // Admin menu: วิธีแก้ไขปัญหา
+    if (request === "ตั้งค่า > วิธีแก้ไขปัญหาเบื้องต้น > รายการปัญหา") {
+      const problems = await ProblemController.getAllProblems();
+
+      const bubbles = await createProblemDetailBubbles("ปัญหา", problems);
+      // console.log("LOG > > > >", problems);
+
+      const replyMessage = {
+        type: "flex",
+        altText: "วิธีแก้ไขปัญหาเบื้องต้น รายการปัญหา",
+        contents: {
+          type: "carousel",
+          contents: bubbles,
+        },
+      };
+
+      return replyMessage;
+    } else if (
+      !request.includes("ตั้งค่า > วิธีแก้ไขปัญหาเบื้องต้น > เพิ่มปัญหา >") &&
+      (await ProblemController.getProblemStatusByAdminCode(requesterCode))
+    ) {
+      if (request !== "ยกเลิกการตั้งค่า") {
+        const addedTitle = await ProblemController.updateProblem(
+          request,
+          requesterCode
+        );
+
+        // แสดงรายการทั้งหมด
+        if (addedTitle) {
+          const problems = await ProblemController.getAllProblems();
+
+          const bubbles = await createProblemDetailBubbles("ปัญหา", problems);
+
+          const replyMessage = {
+            type: "flex",
+            altText: "วิธีแก้ไขปัญหาเบื้องต้น รายการปัญหา",
+            contents: {
+              type: "carousel",
+              contents: bubbles,
+            },
+          };
+
+          return replyMessage;
+        }
+      }
+    } else if (
+      solutionInfo[0] !== "title" &&
+      solutionInfo[1] !== "description"
+    ) {
+      console.log("LOG SOLUTION INFO > > > > >", solutionInfo);
+      const problems = await ProblemController.getProblemByCategory(
+        solutionInfo[4]
+      );
+
+      const bubbles = await createProblemDetailBubbles(
+        "ปัญหาที่เกี่ยวข้อง",
+        problems
+      );
+
+      const replyMessage = {
+        type: "flex",
+        altText: "วิธีแก้ไขปัญหาเบื้องต้น รายการปัญหาที่เกี่ยวข้อง",
+        contents: {
+          type: "carousel",
+          contents: bubbles,
+        },
+      };
+
+      return replyMessage;
+    } else if (
+      request === "ตั้งค่า > วิธีแก้ไขปัญหาเบื้องต้น > รายการวิธีแก้ไข"
+    ) {
+      const solutions = await SolutionController.getAllSolutions();
+
+      const bubbles = await createProblemDetailBubbles(
+        "วิธีแก้ไขปัญหา",
+        solutions
+      );
+
+      const replyMessage = {
+        type: "flex",
+        altText: "วิธีแก้ไขปัญหาเบื้องต้น รายการวิธีแก้ไข",
+        contents: {
+          type: "carousel",
+          contents: bubbles,
+        },
+      };
+
+      return replyMessage;
+    }
   } catch (error) {
     console.error("Error in FlexMessage getResponse:", error);
   }
@@ -237,6 +352,92 @@ async function createReceiptDetailsBubbles(requests, isAdmin) {
       bubbles.push(receipts);
     }
   });
+
+  return bubbles;
+}
+
+async function createProblemDetailBubbles(ticketCategory, problems) {
+  let categoryTickets = {}; // Object to hold tickets for each category
+
+  const problemDetail = FlexMessage.PROBLEM.DETAIL;
+  const solutionDetail = FlexMessage.PROBLEM.SOLUTION;
+  const relatedProblem = FlexMessage.PROBLEM.REALATED;
+
+  for (const prob of problems) {
+    const category = prob.dataValues.category;
+
+    // Create a new ticket if it doesn't exist for this category
+    if (!categoryTickets[category]) {
+      categoryTickets[category] = {
+        count: 0,
+        details: [], // Array to hold problem details
+      };
+    }
+
+    // Increment the count for this category
+    categoryTickets[category].count++;
+
+    // Add problem detail to the array for this category
+    const adminName = await AdminController.getAdminName(
+      prob.dataValues.add_by
+    );
+    if (ticketCategory === "ปัญหา") {
+      categoryTickets[category].details.push(
+        problemDetail(
+          prob.dataValues.title,
+          adminName.name ?? prob.dataValues.add_by
+        ) // วิธีแก้ไขปัญหา
+      );
+    } else if (ticketCategory === "วิธีแก้ไขปัญหา") {
+      categoryTickets[category].details.push(
+        solutionDetail(prob.dataValues.title, prob.dataValues.title)
+      );
+    } else if (ticketCategory === "ปัญหาที่เกี่ยวข้อง") {
+      categoryTickets[category].details.push(
+        relatedProblem(prob.dataValues.title, prob.dataValues.id)
+      );
+    }
+
+    // Update the last updated time if necessary
+    const updatedAt = new Date(prob.dataValues.updated_at)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    if (
+      !categoryTickets[category].updatedAt ||
+      updatedAt > categoryTickets[category].updatedAt
+    ) {
+      categoryTickets[category].updatedAt = updatedAt;
+    }
+  }
+
+  // Convert categoryTickets object to bubbles array
+  let bubbles = [];
+  for (const [category, ticket] of Object.entries(categoryTickets)) {
+    let categoryLabel;
+    switch (category) {
+      case "1":
+        categoryLabel = "ไอที";
+        break;
+      case "2":
+        categoryLabel = "สื่อ";
+        break;
+      case "3":
+        categoryLabel = "อาคาร";
+        break;
+      default:
+        categoryLabel = "Unknown";
+    }
+    bubbles.push(
+      FlexMessage.PROBLEM.TICKET(
+        ticketCategory,
+        categoryLabel,
+        ticket.count,
+        ticket.updatedAt,
+        ticket.details
+      )
+    );
+  }
 
   return bubbles;
 }

@@ -4,6 +4,8 @@ const UserController = require("../UserController");
 const QuickReplyController = require("./QuickReplyController");
 const FlexMessageController = require("./FlexMessageController");
 const MessageController = require("./MessageController");
+const { destroyProblemUncompleted } = require("../ProblemController");
+const { destroySolutionUncompleted } = require("../SolutionController");
 
 exports.handleIncomingMessage = async (message, userId) => {
   try {
@@ -23,8 +25,8 @@ exports.handleIncomingMessage = async (message, userId) => {
 
     if (message.includes("ยกเลิก")) {
       await destroyRequestUncompleted(userCode);
-      
-      return messageResponse
+
+      return messageResponse;
     } else if (quickReplyResponse) {
       return quickReplyResponse;
     } else if (flexMessageResponse) {
@@ -33,6 +35,8 @@ exports.handleIncomingMessage = async (message, userId) => {
       return messageResponse;
     } else {
       await destroyRequestUncompleted(userCode);
+      await destroyProblemUncompleted(userCode);
+      await destroySolutionUncompleted(userCode);
 
       return { type: "text", text: "เกิดข้อผิดพลาดในการประมวลผลคำสั่ง" };
     }

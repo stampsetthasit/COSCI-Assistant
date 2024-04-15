@@ -1,3 +1,5 @@
+const template = require("../../templates/template");
+const { ADMIN } = template;
 const {
   extractCharactersAndNumbers,
   extractContentWithinParentheses,
@@ -7,17 +9,14 @@ const {
   unlinkAdminRichmenu,
 } = require("../../utils/httpRequest");
 
+const ProblemController = require("../ProblemController");
+const SolutionController = require("../SolutionController");
 const RequestController = require("../RequestController");
 
 exports.getResponse = async (request, requesterCode) => {
   try {
     if (request === "ติดตามปัญหา") {
       return { type: "text", text: "ไม่พบประวัติการแจ้งปัญหาของคุณ" };
-    } else if (request === "วิธีแก้ไขปัญหา") {
-      return {
-        type: "text",
-        text: "ฟังก์ชัน " + request + " ยังไม่พร้อมให้บริการ",
-      };
     } else if (request.includes("ยกเลิก")) {
       const reqId = extractCharactersAndNumbers(request);
 
@@ -34,6 +33,9 @@ exports.getResponse = async (request, requesterCode) => {
             };
           }
         }
+      } else if (request === "ยกเลิกการตั้งค่า") {
+        await ProblemController.destroyProblemUncompleted(requesterCode);
+        await SolutionController.destroySolutionUncompleted(requesterCode);
       } else if (request.includes(reqId)) {
         const cancelRequest = await RequestController.cancelRequest(
           requesterCode,
@@ -53,7 +55,7 @@ exports.getResponse = async (request, requesterCode) => {
         }
       }
 
-      return { type: "text", text: "ยกเลิกการแจ้งซ่อมเรียบร้อยแล้วครับ " };
+      return { type: "text", text: "ยกเลิกเรียบร้อยแล้วครับ " };
     } else if (request === "เร่งด่วน") {
       // return {
       //   type: "text",
@@ -71,6 +73,30 @@ exports.getResponse = async (request, requesterCode) => {
             text: `ยืนยันตัวตนแอดมินสำเร็จ userCode: ${requesterCode}`,
           };
         }
+      }
+    }
+
+    // วิธีแก้ไขปัญหาเบื้องต้น
+    if (request.includes("วิธีแก้ไขปัญหา >")) {
+      const solutionTitle = request.split("> ")[1];
+
+      const solution = await SolutionController.getSolution(solutionTitle);
+      if (solution) {
+        const image = `${process.env.BASE_URL}/public/uploads/solutions/${solution.image}`;
+
+        const replyMessage = [
+          {
+            type: "text",
+            text: `วิธีแการแก้ไขปัญหา ${solutionTitle} ทำได้ดังนี้ครับ \n\n${solution.description}`,
+          },
+          {
+            type: "image",
+            originalContentUrl: image,
+            previewImageUrl: image, // Assuming the same URL is used for preview
+          },
+        ];
+
+        return replyMessage;
       }
     }
   } catch (error) {

@@ -101,6 +101,44 @@ function generateUniqueKey() {
   return uuidv4();
 }
 
+function getTextAfterKeyword(input, keyword) {
+  const pattern = new RegExp(keyword + "(\\S*)");
+  const match = input.match(pattern);
+  return match ? match[1] : null;
+}
+
+function convertCategoryToString(category) {
+  switch (category) {
+    case 1:
+    case "ไอที":
+      return "it";
+    case 2:
+    case "สื่อ":
+      return "md";
+    case 3:
+    case "อาคาร":
+      return "bd";
+    default:
+      return NaN;
+  }
+}
+
+function convertStringToCategory(categoryString) {
+  switch (categoryString.toLowerCase()) {
+    case "it":
+    case "ไอที":
+      return 1;
+    case "md":
+    case "สื่อ":
+      return 2;
+    case "bd":
+    case "อาคาร":
+      return 3;
+    default:
+      return NaN; // NaN indicates "Not a Number"
+  }
+}
+
 module.exports = {
   truncateLabel,
   removeNonDigits,
@@ -114,4 +152,7 @@ module.exports = {
   formatDateToString,
   generateRandomNumber,
   generateUniqueKey,
+  getTextAfterKeyword,
+  convertCategoryToString,
+  convertStringToCategory,
 };

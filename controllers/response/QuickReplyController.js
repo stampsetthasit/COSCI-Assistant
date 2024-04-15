@@ -1,13 +1,21 @@
 const { QuickReply } = require("../../templates/template");
-const { Problems, Menu } = QuickReply;
-const { isBusinessHour } = require("../../utils/helpers");
+const { Problems, Menu, ADMIN } = QuickReply;
+const {
+  isBusinessHour,
+  getTextAfterKeyword,
+  convertStringToCategory,
+} = require("../../utils/helpers");
+const { isAdminExist } = require("../AdminController");
 
 const RepairController = require("../data-access/RepairController");
 const RequestController = require("../RequestController");
 const UserController = require("../UserController");
+const ProblemController = require("../ProblemController");
+const SolutionController = require("../SolutionController");
 
 let selectedOptions = [];
 let problemTypes = [Problems.IT, Problems.MD, Problems.BD];
+global.solutionInfo = ["title", "description", "related_problem", "image", "category"];
 
 exports.getResponse = async (request, requesterCode) => {
   try {
@@ -124,6 +132,83 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
     selectedOptions = [];
     return Problems.IMAGE;
   }
+
+  // Admin menu: วิธีแก้ไขปัญหา
+  if (request === ADMIN.SOLUTIONS.name) {
+    if (await isAdminExist(requesterCode)) {
+      return ADMIN.SOLUTIONS;
+    }
+  } else if (
+    request === ADMIN.SOLUTIONS.name + " > เพิ่มปัญหา" ||
+    request === ADMIN.SOLUTIONS.name + " > เพิ่มวิธีแก้ไข"
+  ) {
+    return ADMIN.MENU(request);
+  } else if (
+    request.includes("เพิ่มปัญหา > ฝ่าย") ||
+    request.includes("เพิ่มวิธีแก้ไข > ฝ่าย")
+  ) {
+    await ProblemController.destroyProblemUncompleted(requesterCode);
+    await SolutionController.destroySolutionUncompleted(requesterCode);
+
+    const menu = getTextAfterKeyword(request, "เพิ่ม");
+    const category = convertStringToCategory(
+      getTextAfterKeyword(request, "ฝ่าย")
+    );
+
+    if (menu === "ปัญหา") {
+      const problemCode = await ProblemController.generateProblemCode(category);
+      await ProblemController.createProblem(
+        problemCode,
+        null,
+        category,
+        requesterCode
+      );
+    } else if (menu === "วิธีแก้ไข") {
+      const solutionCode = await SolutionController.generateSolutionCode(
+        category
+      );
+      global.solutionId = solutionCode 
+      await SolutionController.createSolution(
+        solutionCode,
+        null,
+        category,
+        requesterCode
+      );
+    }
+
+    solutionInfo[4] = `${category}`
+
+    return ADMIN.ASK(`กรุณาระบุชื่อเรื่องของ${menu}ที่ต้องการเพิ่มด้วยครับ 😁`);
+  } else if (
+    !request.includes("ตั้งค่า > วิธีแก้ไขปัญหาเบื้องต้น > เพิ่มวิธีแก้ไข >") &&
+    (await SolutionController.getSolutionTitleByAdminCode(requesterCode)) &&
+    solutionInfo[0] == "title"
+  ) {
+    if (request !== "ยกเลิกการตั้งค่า") {
+      solutionInfo[0] = `${request}`;
+      console.log("LOG ARRAY 0 + + + + + >", solutionInfo);
+    }
+
+    global.solutionInfo = solutionInfo;
+
+    return ADMIN.ASK(
+      "กรุณาระบุรายละเอียดของวิธีแก้ไขปัญหาที่ต้องการเพิ่มด้วยครับ 😄"
+    );
+  } else if (solutionInfo[0] !== "title" && solutionInfo[1] == "description") {
+    if (request !== "ยกเลิกการตั้งค่า") {
+      solutionInfo[1] = `${request}`;
+      console.log("LOG ARRAY 1 + + + + + >", solutionInfo);
+    }
+
+  } else if (solutionInfo[1] !== "description" && solutionInfo[2] == "related_problem") {
+    if (request !== "ยกเลิกการตั้งค่า") {
+      // จัดการรูป
+      solutionInfo[2] = `${request}`;
+      console.log("LOG ARRAY 2 + + + + + >", solutionInfo);
+    }
+
+    return ADMIN.ASK_IMAGE;
+  }
 }
 
 function findProblemByName(userProblem) {
@@ -198,7 +283,9 @@ async function generateQuickReplyItems(config, selectedOptions) {
   const flex = Problems.TOPIC;
   flex.contents.body.contents = quickReplyItems;
 
-  console.log(flex.contents.body.contents);
+  // console.log(flex.contents.body.contents);
 
   return flex;
 }
+
+module.exports.solutionInfo = solutionInfo;

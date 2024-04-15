@@ -4,6 +4,7 @@ const path = require("path");
 const UserController = require("../../controllers/UserController");
 const RequestController = require("../../controllers/RequestController");
 const FlexMessageContoller = require("../../controllers/response/FlexMessageController");
+const SolutionController = require("../../controllers/SolutionController");
 
 const { replyMessage } = require("./message");
 const { QuickReply } = require("../../templates/template");
@@ -20,20 +21,49 @@ exports.handleImage = async (event) => {
 
     const userCode = await UserController.getUserCode(userId);
 
-    // if user did not request problem first
-    if (typeof reqId === "undefined") {
-      // Variable is not defined, handle accordingly
-      message.push({
-        type: "text",
-        text: "กรุณาแจ้งปัญหาก่อนครับ !",
-      });
-
+    if (typeof solutionId !== "undefined") {
       if (!isImageSet) {
+        const imageResponse = await getImageFromLine(event.message.id);
+
+        const directoryPath = path.resolve("./");
+        const imagePath = `${directoryPath}/public/uploads/solutions/`;
+        const newFilename = `${solutionId}_${solutionInfo[2]}.jpg`;
+
+        imageResponse.data.pipe(fs.createWriteStream(imagePath + newFilename));
+
+        console.log("UPDATE DATABASE", solutionInfo, newFilename, userCode);
+
+        // update to database
+        await SolutionController.updateSolution(
+          solutionInfo[0],
+          solutionInfo[2],
+          solutionInfo[1],
+          newFilename,
+          userCode
+        );
+
+        message.push({
+          type: "text",
+          text: "เพิ่มวิธีแก้ไขเข้าระบบรียบร้อยแล้วครับ ขอบคุณครับ😁",
+        });
+
+        global.solutionId = undefined;
+        global.solutionInfo = ["title", "description", "related_problem", "image", "category"]
+
         replyMessage(replyToken, message);
-      } else if (isImageSet === 1) {
-        replyMessage(replyToken, message);
+      } else {
+        // if user send multiple image
+        if (isImageSet === 1) {
+          message.push({
+            type: "text",
+            text: "ขออภัยในความไม่สะดวก🙏🏾 ผมสามารถรับได้เพียง 1 รูปเท่านั้น กรุณาลองใหม่😙",
+          });
+          message.push(QuickReply.Problems.IMAGE);
+
+          replyMessage(replyToken, message);
+        }
       }
-    } else {
+    } else if (typeof reqId !== "undefined") {
       // Variable is defined
       if (!isImageSet) {
         const imageResponse = await getImageFromLine(event.message.id);
@@ -89,7 +119,7 @@ exports.handleImage = async (event) => {
           replyMessage(replyToken, message);
         }
       }
-    }
+    } 
   } catch (error) {
     console.error("Error handling image: ", error);
   }

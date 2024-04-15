@@ -8,6 +8,8 @@ const priority = require("./quickreply/request-priority");
 const detail = require("./quickreply/request-detail");
 const guide = require("./quickreply/request-fix-guide");
 const image = require("./quickreply/request-image.js");
+const problemSolution = require("./quickreply/problems-solutions");
+const adminMenu = require("./quickreply/problems-solutions-menu");
 
 const confirm = require("./confirm/confirm-template");
 
@@ -18,7 +20,13 @@ const {
   cancelButton,
 } = require("./flex-message/request-receipt-details");
 const { roomsTable, rowSelecter } = require("./flex-message/rooms-selecter");
-const topic = require("./flex-message/request-topic.js")
+const topic = require("./flex-message/request-topic.js");
+const {
+  problemSolutionTicket,
+  problemDetail,
+  solutionDetail,
+  selectProblemRelated,
+} = require("./flex-message/problem-list.js");
 
 const QuickReply = {
   Problems: {
@@ -30,11 +38,18 @@ const QuickReply = {
     DETAIL: detail,
     GUIDE: guide,
     IMAGE: image,
-    TOPIC: topic
+    TOPIC: topic,
   },
 
   Menu: {
     CATEGORY: menu,
+  },
+
+  ADMIN: {
+    MENU: adminMenu,
+    SOLUTIONS: problemSolution.category,
+    ASK: problemSolution.ask,
+    ASK_IMAGE: problemSolution.askImage
   },
 };
 
@@ -51,6 +66,13 @@ const FlexMessage = {
   REQUEST: {
     DETAILS: receiptDetails,
     CANCEL_BUTTON: cancelButton,
+  },
+
+  PROBLEM: {
+    TICKET: problemSolutionTicket,
+    DETAIL: problemDetail,
+    SOLUTION: solutionDetail,
+    REALATED: selectProblemRelated
   },
 };
 

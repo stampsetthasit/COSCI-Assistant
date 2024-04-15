@@ -101,6 +101,19 @@ exports.getAdminEmail = async (userCode) => {
   } catch (error) {}
 };
 
+exports.getAdminName = async (userCode) => {
+  try {
+    const admin = await Admin.findOne({
+      attributes: ["name"],
+      where: {
+        user_code: userCode,
+      },
+    });
+
+    return admin;
+  } catch (error) {}
+};
+
 exports.isSuperAdmin = (categories) => {
   // Assuming super admins have categories 1, 2, 3
   const superAdminCategories = [1, 2, 3];

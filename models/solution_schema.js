@@ -1,17 +1,26 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database").chatbotUtility;
 
-const Problem = sequelize.define(
-  "Problem",
+const Solution = sequelize.define(
+  "Solution",
   {
     id: {
       type: DataTypes.STRING(8),
       primaryKey: true,
       unique: true,
     },
+    related_problem: {
+      type: DataTypes.TEXT,
+    },
     title: {
       type: DataTypes.STRING,
       unique: true,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    image: {
+      type: DataTypes.STRING,
     },
     category: {
       type: DataTypes.INTEGER,
@@ -25,8 +34,8 @@ const Problem = sequelize.define(
   {
     createdAt: "created_at",
     updatedAt: "updated_at",
-    tableName: "problems",
+    tableName: "solutions",
   }
 );
 
-module.exports = Problem;
+module.exports = Solution;
