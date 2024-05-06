@@ -10,11 +10,11 @@ const {
 const UserController = require("../../controllers/UserController");
 const AdminController = require("../../controllers/AdminController");
 
-exports.broadcast = async (userId, { message, image, emergency }) => {
+exports.broadcast = async (userId, { department ,message, image, emergency }) => {
   const userCode = await UserController.getUserCode(userId);
-  const category = mapCategoryToDepartment(
+  // const category = mapCategoryToDepartment(
     await AdminController.getAdminCategory(userCode)
-  );
+  // );
   const xLineRetryKey = generateUniqueKey();
 
   const broadcastRequest = {
@@ -22,9 +22,9 @@ exports.broadcast = async (userId, { message, image, emergency }) => {
       {
         type: "text",
         text:
-          `ประกาศ ${emergency == "true" ? "#ฉุกเฉิน 🚨" : "#ทั่วไป"}\n\n` +
+          `ประกาศ ${emergency == "true" ? "#ข่าวด่วน 🚨" : "#ข่าวสารทั่วไป"}\n\n` +
           message +
-          `\n\n📣ประกาศโดย ${category}`,
+          `\n\n📣ประกาศโดย ${department}`,
       },
     ],
   };
@@ -60,7 +60,7 @@ exports.broadcast = async (userId, { message, image, emergency }) => {
       id: result["x-line-request-id"],
       message: message,
       image: image.name,
-      category: category,
+      category: department,
       emergency: emergency,
       broadcaster: userCode,
     };
