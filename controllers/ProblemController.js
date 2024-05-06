@@ -48,7 +48,7 @@ exports.getProblemByCategory = async (category) => {
   try {
     const problem = await Problem.findAll({
       where: {
-        category: category
+        category: category,
       },
     });
 

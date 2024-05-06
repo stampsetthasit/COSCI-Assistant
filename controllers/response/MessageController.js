@@ -61,7 +61,7 @@ exports.getResponse = async (request, requesterCode) => {
       //   type: "text",
       //   text: "แสดง QuickReply ให้ user เลือกแผนก หลังจากนั้น ทำการสุ่ม Admin สัก 1 คนในแผนกที่เกี่ยวข้อง และแสดงแอดมินที่รับผิดชอบแผนกเดียวก่อน แอดมินที่รับผิดชอบหลายแผนก",
       // };
-    } else if (request.includes("ยืนยันแอดมิน")) {
+    } else if (request.includes("ยืนยันadmin")) {
       const email = extractContentWithinParentheses(request);
 
       if (email) {

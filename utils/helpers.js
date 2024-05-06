@@ -139,6 +139,11 @@ function convertStringToCategory(categoryString) {
   }
 }
 
+function countGreaterThanSigns(str) {
+  // Split the string by '>' and subtract 1 from the length of the resulting array
+  return str.split(">").length - 1;
+}
+
 module.exports = {
   truncateLabel,
   removeNonDigits,
@@ -155,4 +160,5 @@ module.exports = {
   getTextAfterKeyword,
   convertCategoryToString,
   convertStringToCategory,
+  countGreaterThanSigns
 };

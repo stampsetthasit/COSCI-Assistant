@@ -336,6 +336,7 @@ async function createReceiptDetailsBubbles(requests, isAdmin) {
   let bubbles = [];
   const requestReceipt = FlexMessage.REQUEST.DETAILS;
   const cancelButton = FlexMessage.REQUEST.CANCEL_BUTTON;
+  const updateButton = FlexMessage.REQUEST.UPDATE_BUTTON;
 
   const rooms = await RoomController.getRoomInfoLists();
   const categories = await RepairController.getRepairCategory();
@@ -348,7 +349,10 @@ async function createReceiptDetailsBubbles(requests, isAdmin) {
     if (req.req_status == 1 && !isAdmin) {
       receipts.body.contents[0].contents.push(cancelButton(req.req_id));
       bubbles.push(receipts);
-    } else {
+    } else if (isAdmin) {
+      if (req.req_status != 11) {
+        receipts.body.contents[0].contents.push(updateButton(req.req_id));
+      }
       bubbles.push(receipts);
     }
   });

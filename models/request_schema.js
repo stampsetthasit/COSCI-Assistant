@@ -37,7 +37,7 @@ const Request = sequelize.define(
       allowNull: false,
     },
     req_finished: {
-      type: DataTypes.TIME,
+      type: DataTypes.DATE,
     },
   },
   {

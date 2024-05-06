@@ -4,6 +4,8 @@ const {
   isBusinessHour,
   getTextAfterKeyword,
   convertStringToCategory,
+  countGreaterThanSigns,
+  mapStatusById,
 } = require("../../utils/helpers");
 const { isAdminExist } = require("../AdminController");
 
@@ -12,10 +14,17 @@ const RequestController = require("../RequestController");
 const UserController = require("../UserController");
 const ProblemController = require("../ProblemController");
 const SolutionController = require("../SolutionController");
+const AdminController = require("../AdminController");
 
 let selectedOptions = [];
 let problemTypes = [Problems.IT, Problems.MD, Problems.BD];
-global.solutionInfo = ["title", "description", "related_problem", "image", "category"];
+global.solutionInfo = [
+  "title",
+  "description",
+  "related_problem",
+  "image",
+  "category",
+];
 
 exports.getResponse = async (request, requesterCode) => {
   try {
@@ -167,7 +176,7 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
       const solutionCode = await SolutionController.generateSolutionCode(
         category
       );
-      global.solutionId = solutionCode 
+      global.solutionId = solutionCode;
       await SolutionController.createSolution(
         solutionCode,
         null,
@@ -176,7 +185,7 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
       );
     }
 
-    solutionInfo[4] = `${category}`
+    solutionInfo[4] = `${category}`;
 
     return ADMIN.ASK(`กรุณาระบุชื่อเรื่องของ${menu}ที่ต้องการเพิ่มด้วยครับ 😁`);
   } else if (
@@ -199,8 +208,10 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
       solutionInfo[1] = `${request}`;
       console.log("LOG ARRAY 1 + + + + + >", solutionInfo);
     }
-
-  } else if (solutionInfo[1] !== "description" && solutionInfo[2] == "related_problem") {
+  } else if (
+    solutionInfo[1] !== "description" &&
+    solutionInfo[2] == "related_problem"
+  ) {
     if (request !== "ยกเลิกการตั้งค่า") {
       // จัดการรูป
       solutionInfo[2] = `${request}`;
@@ -208,6 +219,64 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
     }
 
     return ADMIN.ASK_IMAGE;
+  }
+
+  // Admin menu: อัปเดตสถานะ
+  if (
+    request.includes("อัปเดตสถานะ >") &&
+    (await AdminController.isAdminExist(requesterCode))
+  ) {
+    const count = countGreaterThanSigns(request);
+    const reqId = getTextAfterKeyword(request, "> ");
+    const validId = await RequestController.isReqIdValid(reqId);
+
+    if (count == 1 && validId) {
+      return Problems.UPDATE_STATUS(reqId);
+    } else if (count === 2 && validId) {
+      // Update status based on conditions
+      const oldStatus = validId.req_status;
+      const newStatus = getStatusNumber(request);
+      // Initialize an object to hold update data
+      let updateData = {};
+
+      // Check if the new status differs from the old status
+      if (newStatus !== oldStatus && oldStatus !== 11) {
+        updateData.req_status = newStatus;
+
+        if (newStatus == 3) {
+          // Set approved by if the new status is 3
+          updateData.req_approved_by = requesterCode;
+        } else if (newStatus == 11) {
+          // Set finished timestamp if the new status is 11 (completed)
+          const timestamp = new Date()
+          
+          updateData.req_finished = timestamp
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+        }
+        // If there are updates to apply, log them and update the request
+        if (Object.keys(updateData).length > 0) {
+          console.log("Update data:", updateData);
+          await RequestController.updateRequestById(reqId, updateData);
+
+          const statusList = await RepairController.getRepairStatus();
+
+          // Return a success message
+          return {
+            type: "text",
+            text: `${reqId} อัปเดตสถานะสำเร็จ ${
+              mapStatusById(oldStatus, statusList).name
+            } -> ${mapStatusById(newStatus, statusList).name}`,
+          };
+        }
+      } else {
+        // If no changes in status, return an error message
+        return { type: "text", text: "ไม่สามารถอัปเดตสถานะซ้ำได้" };
+      }
+    } else {
+      return { type: "text", text: "ขออภัยครับ RequestID ไม่ถูกต้องครับ" };
+    }
   }
 }
 
@@ -217,6 +286,22 @@ function findProblemByName(userProblem) {
   );
 
   return matchedProblem;
+}
+
+function getStatusNumber(text) {
+  // Define a regular expression pattern to match one or two digits at the end of the string
+  const pattern = /(\d{1,2})$/;
+
+  // Use the `match` method to find the number at the end of the string
+  const match = text.match(pattern);
+
+  // If a match is found, return the number (as an integer)
+  if (match) {
+    return parseInt(match[0], 10);
+  }
+
+  // If no match is found, return null (you can return any other default value if desired)
+  return null;
 }
 
 async function handleMatchedProblem(matchedProblem, requesterCode) {

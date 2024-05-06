@@ -253,3 +253,33 @@ exports.cancelButton = (reqId) => ({
   offsetEnd: "0px",
   width: "48px",
 });
+
+exports.updateButton = (reqId) => ({
+  type: "box",
+  layout: "horizontal",
+  contents: [
+    {
+      type: "text",
+      text: "อัปเดต",
+      size: "xxs",
+      color: "#ffffff",
+      align: "center",
+      gravity: "center",
+    },
+  ],
+  backgroundColor: "#FFBF00",
+  paddingAll: "2px",
+  paddingStart: "6px",
+  paddingEnd: "6px",
+  position: "absolute",
+  cornerRadius: "150px",
+  height: "24px",
+  action: {
+    type: "message",
+    label: "action",
+    text: `อัปเดตสถานะ > ${reqId}`,
+  },
+  offsetTop: "2px",
+  offsetEnd: "0px",
+  width: "48px",
+});

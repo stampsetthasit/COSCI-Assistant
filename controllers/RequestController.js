@@ -115,6 +115,21 @@ exports.getRequestById = async (userCode, reqId) => {
   }
 };
 
+exports.isReqIdValid = async (reqId) => {
+  try {
+    const validId = await Request.findOne({
+      where: {
+        req_id: reqId,
+      },
+    });
+
+    return validId;
+  } catch (error) {
+    console.error("Error verify reqId:", error);
+    throw error;
+  }
+};
+
 exports.cancelRequest = async (userCode, reqId) => {
   try {
     const canceledRequest = await Request.destroy({
