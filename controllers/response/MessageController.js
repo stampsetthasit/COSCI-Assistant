@@ -87,7 +87,7 @@ exports.getResponse = async (request, requesterCode) => {
         const replyMessage = [
           {
             type: "text",
-            text: `วิธีแการแก้ไขปัญหา ${solutionTitle} ทำได้ดังนี้ครับ \n\n${solution.description}`,
+            text: `วิธีการแก้ไขปัญหา ${solutionTitle} ทำได้ดังนี้ครับ \n\n${solution.description}`,
           },
           {
             type: "image",
