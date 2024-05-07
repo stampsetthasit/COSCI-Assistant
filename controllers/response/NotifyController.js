@@ -24,6 +24,39 @@ exports.getUserNotify = async (userId) => {
   }
 };
 
+exports.getUsersAllowNotify = async (emergency) => {
+  const queryOptions = {};
+
+  // Set query options based on the emergency parameter
+  if (emergency == 1 || emergency == true) {
+    queryOptions.emergency = 1;
+  } else {
+    queryOptions.news = 1;
+  }
+
+  try {
+    const userCodes = await Notify.findAll({
+      where: queryOptions,
+      attributes: ["user_code"],
+    });
+
+    // Map user codes to a list of user IDs
+    const userIds = await Promise.all(
+      userCodes.map(async (user) => {
+        // Use UserController to get user ID from user code
+        const userId = await UserController.getUserId(user.user_code);
+        return userId;
+      })
+    );
+
+    // Return the list of user IDs
+    return userIds || [];
+  } catch (error) {
+    console.error("Error getting users that allow notifications:", error);
+    throw Error;
+  }
+};
+
 exports.update = async (userId, status) => {
   try {
     const userCode = await UserController.getUserCode(userId);

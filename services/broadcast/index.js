@@ -3,10 +3,10 @@ const BroadcastController = require("../../controllers/response/BroadcastControl
 exports.post = async (req, res) => {
   try {
     const userId = req.params.id;
-    const image = req.files.image ?? null;
+    const image = req.files && req.files.image ? req.files.image : null;
     const { department, emergency, message } = req.body;
 
-    const response = await BroadcastController.broadcast(userId, {
+    const response = await BroadcastController.manualBroadcast(userId, {
       department,
       message,
       image,
