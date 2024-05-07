@@ -2,6 +2,7 @@ const { replyMessage } = require("./message");
 const { client } = require("../../config/line");
 
 const UserController = require("../../controllers/UserController");
+const NotifyController = require("../../controllers/response/NotifyController");
 
 exports.handleFollow = async (event) => {
   try {
@@ -20,6 +21,8 @@ exports.handleFollow = async (event) => {
         userProfile.displayName,
         userProfile.pictureUrl
       );
+
+      await NotifyController.createUserNotify(userCode)
     } else {
       await UserController.updateUser(
         userProfile.userId,
@@ -32,7 +35,7 @@ exports.handleFollow = async (event) => {
     // TODO: EDIT MESSAGE OR SEND 
     const message = {
       type: "text",
-      text: `Thank you for following me: ${await UserController.getUserCode(userId)}`,
+      text: `ขอบคุณที่เป็นเพื่อนกับเรา รหัสผู้ใช้ของคุณคือ: ${await UserController.getUserCode(userId)}`,
     };
 
     return replyMessage(replyToken, message);

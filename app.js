@@ -10,6 +10,7 @@ const indexRouter = require("./routes/index");
 const richMenuRouter = require("./routes/richmenu");
 const lineRouter = require("./routes/line");
 const broadcastRouter = require("./routes/broadcast");
+const notifyRouter = require("./routes/notify");
 
 const app = express();
 app.use(cors());
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/richmenu", richMenuRouter);
 app.use("/broadcast", broadcastRouter);
+app.use("/notify", notifyRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -165,6 +165,27 @@ exports.updateUserRole = async (userCode, role) => {
   }
 };
 
+exports.updateNotify = async (userCode, status) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        user_code: userCode,
+      },
+    });
+
+    if (user) {
+      await user.update({
+        allow_notify: status,
+      });
+    }
+
+    return user.allow_notify;
+  } catch (error) {
+    console.error("Error updating user notify:", error);
+    throw error;
+  }
+};
+
 exports.getRole = async (userCode) => {
   try {
     const user = await User.findOne({
