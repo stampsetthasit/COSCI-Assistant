@@ -39,8 +39,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "text": "ประกาศข่าวสาร"
+        "type": "uri",
+        "uri": "https://liff.line.me/2000715932-ol3QN4xx"
       }
     },
     {
@@ -52,7 +52,7 @@
       },
       "action": {
         "type": "uri",
-        "uri": "https://liff.line.me"
+        "uri": "https://liff.line.me/2000715932-eAbL6q22"
       }
     },
     {

@@ -99,6 +99,10 @@ exports.getResponse = async (request, requesterCode) => {
         return replyMessage;
       }
     }
+
+    if (request === "COSCI FAQ") {
+      return { type: "text", text: "Soon" };
+    }
   } catch (error) {
     console.error("Error in Message getResponse:", error);
   }

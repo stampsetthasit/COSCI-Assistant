@@ -3,8 +3,8 @@ const router = express.Router();
 
 const notify = require("../services/notify/index");
 
-router.get("/:id", notify.getUserSetting);
+router.post("/:id", notify.getUserSetting);
 
-router.post("/setting/:id", notify.setting)
+router.post("/setting/:id", notify.setting);
 
 module.exports = router;

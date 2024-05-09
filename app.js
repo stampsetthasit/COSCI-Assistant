@@ -4,6 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const helmet = require("helmet");
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
@@ -13,7 +14,19 @@ const broadcastRouter = require("./routes/broadcast");
 const notifyRouter = require("./routes/notify");
 
 const app = express();
-app.use(cors());
+
+const origin = "*";
+const corsOptions = {
+  origin: origin,
+  credentials: true,
+  methods: "GET, POST, PUT, PATCH, DELETE",
+};
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+app.use(cors(corsOptions));
 
 app.use("/line", lineRouter);
 
@@ -26,7 +39,7 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/richmenu", richMenuRouter);
 app.use("/broadcast", broadcastRouter);
-app.use("/notify", notifyRouter)
+app.use("/notify", notifyRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

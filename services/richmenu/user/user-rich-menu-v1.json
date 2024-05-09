@@ -75,8 +75,8 @@
         "height": 843
       },
       "action": {
-        "type": "message",
-        "text": "ประเมินแชทบอท"
+        "type": "uri",
+        "uri": "https://forms.gle/DYdW8s58mixXRaws9"
       }
     }
   ]
