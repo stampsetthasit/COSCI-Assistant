@@ -338,24 +338,31 @@ async function createReceiptDetailsBubbles(requests, isAdmin) {
   const cancelButton = FlexMessage.REQUEST.CANCEL_BUTTON;
   const updateButton = FlexMessage.REQUEST.UPDATE_BUTTON;
 
-  const rooms = await RoomController.getRoomInfoLists();
-  const categories = await RepairController.getRepairCategory();
-  const status = await RepairController.getRepairStatus();
+  try {
+    const rooms = await RoomController.getRoomInfoLists();
+    const categories = await RepairController.getRepairCategory();
+    const status = await RepairController.getRepairStatus();
 
-  requests.forEach((req) => {
-    const requestInfo = createRequestInfo(req, rooms, categories, status);
-    const receipts = requestReceipt(requestInfo);
+    requests.forEach((req) => {
+      const requestInfo = createRequestInfo(req, rooms, categories, status);
+      const receipts = requestReceipt(requestInfo);
 
-    if (req.req_status == 1 && !isAdmin) {
-      receipts.body.contents[0].contents.push(cancelButton(req.req_id));
-      bubbles.push(receipts);
-    } else if (isAdmin) {
-      if (req.req_status != 11) {
-        receipts.body.contents[0].contents.push(updateButton(req.req_id));
+      if (req.req_status == 1 && !isAdmin) {
+        receipts.body.contents[0].contents.push(cancelButton(req.req_id));
+        bubbles.push(receipts);
+      } else if (isAdmin) {
+        if (req.req_status != 11) {
+          receipts.body.contents[0].contents.push(updateButton(req.req_id));
+        }
+        bubbles.push(receipts);
       }
+      
       bubbles.push(receipts);
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Error creating receipt details bubbles:", error);
+    throw error; // Rethrow the error to handle it at a higher level
+  }
 
   return bubbles;
 }

@@ -80,7 +80,7 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
 
     console.log("MATCHED PROBLEM LOG : : :", reqId);
 
-    console.log(quickReply);
+    // console.log(quickReply);
 
     return quickReply;
   } else if (request.includes(Problems.OTHER.name)) {
@@ -111,7 +111,7 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
       if (!isWithinBusinessHour) {
         selectedOptions[1] = "ไม่เร่งด่วน";
         return [
-          { type: "text", text: "ขออภัย😢 ไม่มีพนักงานออนไลน์ในขณะนี้🙏🏾" },
+          { type: "text", text: "ขออภัย😢 ตอนนี้อยู่นอกเวลาทำการของผู้ดูแล🙏" },
           Problems.GUIDE,
         ];
       }
@@ -248,8 +248,8 @@ async function handleQuickReply(request, requesterCode, matchedProblem) {
           updateData.req_approved_by = requesterCode;
         } else if (newStatus == 11) {
           // Set finished timestamp if the new status is 11 (completed)
-          const timestamp = new Date()
-          
+          const timestamp = new Date();
+
           updateData.req_finished = timestamp
             .toISOString()
             .slice(0, 19)
@@ -344,13 +344,33 @@ async function generateQuickReplyItems(config, selectedOptions) {
 
   problems.map((problem) => {
     quickReplyItems.unshift({
-      type: "button",
-      action: {
-        type: "message",
-        label: problem.prob_name,
-        text: problem.prob_name,
-      },
-      adjustMode: "shrink-to-fit",
+      type: "box",
+      layout: "horizontal",
+      contents: [
+        {
+          type: "button",
+          action: {
+            type: "message",
+            label: problem.prob_name,
+            text: problem.prob_name,
+          },
+          adjustMode: "shrink-to-fit",
+          flex: 3,
+          color: "#FFFFFF",
+          scaling: true,
+        },
+        {
+          type: "button",
+          action: {
+            type: "message",
+            label: "เลือก",
+            text: problem.prob_name,
+          },
+          color: "#eaf0bd",
+          scaling: true,
+        },
+      ],
+      backgroundColor: "#1368BE",
     });
     selectedOptions.push(problem.prob_name);
   });

@@ -23,6 +23,7 @@ module.exports = {
     footer: {
       type: "box",
       layout: "vertical",
+      spacing: "sm",
       contents: [
         {
           type: "button",
@@ -35,6 +36,7 @@ module.exports = {
           color: "#D11A2A",
         },
       ],
+      flex: 0
     },
   },
 };

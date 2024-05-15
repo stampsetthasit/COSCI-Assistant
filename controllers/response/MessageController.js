@@ -20,7 +20,7 @@ exports.getResponse = async (request, requesterCode) => {
     } else if (request.includes("ยกเลิก")) {
       const reqId = extractCharactersAndNumbers(request);
 
-      if (request.includes("ยกเลิกแอดมิน")) {
+      if (request.includes("ยกเลิกadmin")) {
         const userCode = extractContentWithinParentheses(request);
 
         if (userCode) {

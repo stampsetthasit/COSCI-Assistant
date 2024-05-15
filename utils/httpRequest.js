@@ -38,10 +38,7 @@ async function linkAdminRichmenu(userCode, email) {
 async function unlinkAdminRichmenu(userCode, adminUserCode) {
   try {
     const response = await axios.get(
-      `${process.env.BASE_URL}/richmenu/unlink/admin/${userCode}/${adminUserCode}`,
-      {
-        responseType: "stream",
-      }
+      `${process.env.BASE_URL}/richmenu/unlink/admin/${userCode}/${adminUserCode}`
     );
 
     return response;
