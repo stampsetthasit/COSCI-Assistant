@@ -15,9 +15,8 @@ const notifyRouter = require("./routes/notify");
 
 const app = express();
 
-const origin = "*";
 const corsOptions = {
-  origin: origin,
+  origin: "*",
   credentials: true,
   methods: "GET, POST, PUT, PATCH, DELETE",
 };

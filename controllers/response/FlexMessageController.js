@@ -32,16 +32,11 @@ exports.getResponse = async (request, requesterCode) => {
 
       const bubbles = await createReceiptDetailsBubbles(userRequests, false);
 
-      const replyMessage = {
-        type: "flex",
-        altText: "รายการปัญหา",
-        contents: {
-          type: "carousel",
-          contents: bubbles,
-        },
-      };
+      const messages = createFlexMessages(bubbles);
 
-      return replyMessage;
+      for (const message of messages) {
+        return message;
+      }
     }
 
     // รายการปัญหา
@@ -57,16 +52,11 @@ exports.getResponse = async (request, requesterCode) => {
 
         const bubbles = await createReceiptDetailsBubbles(requests, true);
 
-        const replyMessage = {
-          type: "flex",
-          altText: "รายการปัญหา",
-          contents: {
-            type: "carousel",
-            contents: bubbles,
-          },
-        };
+        const messages = createFlexMessages(bubbles);
 
-        return replyMessage;
+        for (const message of messages) {
+          return message;
+        }
       }
     }
 
@@ -349,14 +339,11 @@ async function createReceiptDetailsBubbles(requests, isAdmin) {
 
       if (req.req_status == 1 && !isAdmin) {
         receipts.body.contents[0].contents.push(cancelButton(req.req_id));
-        bubbles.push(receipts);
       } else if (isAdmin) {
         if (req.req_status != 11) {
           receipts.body.contents[0].contents.push(updateButton(req.req_id));
         }
-        bubbles.push(receipts);
       }
-      
       bubbles.push(receipts);
     });
   } catch (error) {
@@ -451,4 +438,24 @@ async function createProblemDetailBubbles(ticketCategory, problems) {
   }
 
   return bubbles;
+}
+
+function createFlexMessages(bubbles) {
+  const messages = [];
+  const chunkSize = 10;
+
+  for (let i = 0; i < bubbles.length; i += chunkSize) {
+    const chunk = bubbles.slice(i, i + chunkSize);
+    const message = {
+      type: "flex",
+      altText: "รายการปัญหา",
+      contents: {
+        type: "carousel",
+        contents: chunk,
+      },
+    };
+    messages.push(message);
+  }
+
+  return messages;
 }

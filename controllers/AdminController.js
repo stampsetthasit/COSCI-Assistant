@@ -119,7 +119,9 @@ exports.isSuperAdmin = (categories) => {
   const superAdminCategories = [1, 2, 3];
 
   // Check if the user has all super admin categories
-  return superAdminCategories.every((category) =>
+  const superAdmin = superAdminCategories.every((category) =>
     categories.includes(category)
   );
+
+  return superAdmin
 };

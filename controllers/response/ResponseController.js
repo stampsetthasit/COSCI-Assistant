@@ -38,7 +38,7 @@ exports.handleIncomingMessage = async (message, userId) => {
       await destroyProblemUncompleted(userCode);
       await destroySolutionUncompleted(userCode);
 
-      return { type: "text", text: "เกิดข้อผิดพลาดในการประมวลผลคำสั่ง" };
+      return { type: "text", text: "กรุณาเลือกเมนูบน Rich menu" };
     }
   } catch (error) {
     console.error("Error handling incoming message:", error);
